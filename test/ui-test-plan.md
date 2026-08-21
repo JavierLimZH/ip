@@ -59,3 +59,44 @@ event project meeting /from Mon 2pm /to 4pm
        [E][ ] project meeting (from: Mon 2pm to: 4pm)
      Now you have 1 tasks in the list.
 ```
+
+## Test: Reject incorrect commands and recover
+
+Aim: Confirm that invalid input produces a helpful error and the chatbot continues accepting commands.
+
+### Commands
+
+```text
+todo
+blah
+deadline submit report
+event project meeting /from Mon 2pm
+mark one
+unmark 1
+```
+
+### Expected outputs
+
+```text
+     Quack? Give me a todo description!
+```
+
+```text
+     Quack? I don't know what that means :-(
+```
+
+```text
+     Quack? Use /by to give the deadline.
+```
+
+```text
+     Quack? Use /from START /to END for an event.
+```
+
+```text
+     Quack? Please enter a valid task number.
+```
+
+```text
+     Quack? Please enter a task number from the list.
+```

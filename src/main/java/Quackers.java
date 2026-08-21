@@ -53,14 +53,56 @@ public class Quackers {
                     } else {
                         System.out.println("     Please enter a task number from the list.");
                     }
-                } else if (taskCount < MAX_TASKS) {
-                    tasks[taskCount] = new Task(command);
-                    taskCount++;
-                    System.out.println("     added: " + command);
+                } else if (command.startsWith("todo ")) {
+                    taskCount = addTask(tasks, taskCount, new Todo(command.substring(5).trim()));
+                } else if (command.startsWith("deadline ")) {
+                    int byMarker = command.indexOf(" /by ");
+                    if (byMarker < 0) {
+                        System.out.println("     Use: deadline DESCRIPTION /by DATE");
+                    } else {
+                        String description = command.substring(9, byMarker).trim();
+                        String by = command.substring(byMarker + 5).trim();
+                        taskCount = addTask(tasks, taskCount, new Deadline(description, by));
+                    }
+                } else if (command.startsWith("event ")) {
+                    int fromMarker = command.indexOf(" /from ");
+                    int toMarker = command.indexOf(" /to ");
+                    if (fromMarker < 0 || toMarker < 0 || toMarker < fromMarker) {
+                        System.out.println("     Use: event DESCRIPTION /from START /to END");
+                    } else {
+                        String description = command.substring(6, fromMarker).trim();
+                        String from = command.substring(fromMarker + 7, toMarker).trim();
+                        String to = command.substring(toMarker + 5).trim();
+                        taskCount = addTask(tasks, taskCount, new Event(description, from, to));
+                    }
+                } else {
+                    System.out.println("     I don't understand that command.");
                 }
 
                 System.out.println(separator);
             }
         }
+    }
+
+    /**
+     * Adds a task and prints the standard confirmation message when capacity remains.
+     *
+     * @param tasks the task storage
+     * @param taskCount the number of stored tasks before adding
+     * @param task the task to add
+     * @return the updated task count
+     */
+    private static int addTask(Task[] tasks, int taskCount, Task task) {
+        if (taskCount == MAX_TASKS) {
+            System.out.println("     Your task list is full.");
+            return taskCount;
+        }
+
+        tasks[taskCount] = task;
+        int updatedTaskCount = taskCount + 1;
+        System.out.println("     Got it. I've added this task:");
+        System.out.println("       " + task);
+        System.out.println("     Now you have " + updatedTaskCount + " tasks in the list.");
+        return updatedTaskCount;
     }
 }

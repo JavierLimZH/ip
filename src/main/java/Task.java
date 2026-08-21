@@ -39,6 +39,15 @@ public class Task {
     }
 
     /**
+     * Returns the description shared by all task types.
+     *
+     * @return the task description
+     */
+    protected String getDescription() {
+        return description;
+    }
+
+    /**
      * Formats this task for display in command responses and task lists.
      *
      * @return the status icon followed by the task description

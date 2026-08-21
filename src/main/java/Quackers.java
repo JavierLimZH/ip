@@ -46,6 +46,15 @@ public class Quackers {
                     } else {
                         System.out.println("     Please enter a task number from the list.");
                     }
+                } else if (command.matches("unmark \\d+")) {
+                    int taskIndex = Integer.parseInt(command.substring(7)) - 1;
+                    if (taskIndex >= 0 && taskIndex < taskCount) {
+                        isDone[taskIndex] = false;
+                        System.out.println("     OK, I've marked this task as not done yet:");
+                        System.out.println("       [ ] " + tasks[taskIndex]);
+                    } else {
+                        System.out.println("     Please enter a task number from the list.");
+                    }
                 } else if (taskCount < MAX_TASKS) {
                     tasks[taskCount] = command;
                     taskCount++;

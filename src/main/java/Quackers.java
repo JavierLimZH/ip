@@ -1,14 +1,18 @@
 import java.util.Scanner;
 
 /**
- * Minimal entry point for the Quackers chatbot project.
+ * Runs the Quackers chatbot and keeps the user's tasks in memory.
  */
 public class Quackers {
+    private static final int MAX_TASKS = 100;
+
     public static void main(String[] args) {
         String separator = "_".repeat(60);
         String banner = "+--------------------+\n"
                 + "|      QUACKERS      |\n"
                 + "+--------------------+";
+        String[] tasks = new String[MAX_TASKS];
+        int taskCount = 0;
 
         System.out.println(separator);
         System.out.println(banner);
@@ -21,14 +25,22 @@ public class Quackers {
                 String command = scanner.nextLine();
 
                 System.out.println(separator);
-                System.out.println("     " + command);
-                System.out.println(separator);
 
                 if (command.equals("bye")) {
                     System.out.println("     Bye. Hope to see you again soon!");
                     System.out.println(separator);
                     break;
+                } else if (command.equals("list")) {
+                    for (int i = 0; i < taskCount; i++) {
+                        System.out.println("     " + (i + 1) + ". " + tasks[i]);
+                    }
+                } else if (taskCount < MAX_TASKS) {
+                    tasks[taskCount] = command;
+                    taskCount++;
+                    System.out.println("     added: " + command);
                 }
+
+                System.out.println(separator);
             }
         }
     }

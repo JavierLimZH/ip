@@ -85,6 +85,9 @@ public class Quackers {
             case LIST:
                 ui.showTasks(tasks.getTasks());
                 break;
+            case FIND:
+                ui.showMatchingTasks(tasks.find(Parser.parseFindKeyword(command)));
+                break;
             case MARK:
                 updateTaskStatus(command, "mark", true);
                 break;

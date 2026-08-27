@@ -14,6 +14,7 @@ class ParserTest {
         assertAll(
                 () -> assertEquals(CommandType.BYE, Parser.parseCommandType("bye")),
                 () -> assertEquals(CommandType.LIST, Parser.parseCommandType("list")),
+                () -> assertEquals(CommandType.FIND, Parser.parseCommandType("find book")),
                 () -> assertEquals(CommandType.MARK, Parser.parseCommandType("mark 1")),
                 () -> assertEquals(CommandType.UNMARK, Parser.parseCommandType("unmark 1")),
                 () -> assertEquals(CommandType.DELETE, Parser.parseCommandType("delete 1")),
@@ -57,5 +58,13 @@ class ParserTest {
                 () -> Parser.parseTaskIndex("delete first", "delete"));
 
         assertEquals("Quack? Please enter a valid task number.", error.getMessage());
+    }
+
+    @Test
+    void parseFindKeyword_missingKeyword_exceptionThrown() {
+        QuackersException error = assertThrows(QuackersException.class,
+                () -> Parser.parseFindKeyword("find"));
+
+        assertEquals("Quack? Give me a keyword to find!", error.getMessage());
     }
 }

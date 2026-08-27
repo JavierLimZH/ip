@@ -1,3 +1,4 @@
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -11,12 +12,23 @@ public class Quackers {
         String banner = "+--------------------+\n"
                 + "|      QUACKERS      |\n"
                 + "+--------------------+";
-        List<Task> tasks = new ArrayList<>();
+        Storage storage = new Storage(Path.of("data", "quackers.txt"));
+        List<Task> tasks;
+        String loadingError = null;
+        try {
+            tasks = storage.load();
+        } catch (QuackersException error) {
+            tasks = new ArrayList<>();
+            loadingError = error.getMessage();
+        }
 
         System.out.println(separator);
         System.out.println(banner);
         System.out.println("Hello! I'm Quackers.");
         System.out.println("What can I do for you? Quack!");
+        if (loadingError != null) {
+            System.out.println("     " + loadingError);
+        }
         System.out.println(separator);
 
         try (Scanner scanner = new Scanner(System.in)) {
@@ -31,7 +43,7 @@ public class Quackers {
                     break;
                 }
                 try {
-                    handleCommand(command, tasks);
+                    handleCommand(command, tasks, storage);
                 } catch (QuackersException error) {
                     System.out.println("     " + error.getMessage());
                 }
@@ -46,9 +58,11 @@ public class Quackers {
      *
      * @param command the command entered by the user
      * @param tasks the task storage
+     * @param storage the file used to persist task changes
      * @throws QuackersException if the command or one of its required fields is invalid
      */
-    private static void handleCommand(String command, List<Task> tasks) throws QuackersException {
+    private static void handleCommand(String command, List<Task> tasks, Storage storage)
+            throws QuackersException {
         if (command.equals("list")) {
             System.out.println("     Here are the tasks in your list:");
             for (int i = 0; i < tasks.size(); i++) {
@@ -57,21 +71,21 @@ public class Quackers {
             return;
         }
         if (command.startsWith("mark")) {
-            updateTaskStatus(command, "mark", tasks, true);
+            updateTaskStatus(command, "mark", tasks, storage, true);
             return;
         }
         if (command.startsWith("unmark")) {
-            updateTaskStatus(command, "unmark", tasks, false);
+            updateTaskStatus(command, "unmark", tasks, storage, false);
             return;
         }
         if (command.startsWith("delete")) {
-            deleteTask(command, tasks);
+            deleteTask(command, tasks, storage);
             return;
         }
         if (command.equals("todo") || command.startsWith("todo ")) {
             String description = command.length() == 4 ? "" : command.substring(5).trim();
             requireText(description, "Quack? Give me a todo description!");
-            addTask(tasks, new Todo(description));
+            addTask(tasks, new Todo(description), storage);
             return;
         }
         if (command.equals("deadline") || command.startsWith("deadline ")) {
@@ -83,7 +97,7 @@ public class Quackers {
             String by = command.substring(byMarker + 5).trim();
             requireText(description, "Quack? Give me a deadline description!");
             requireText(by, "Quack? Give me a deadline date!");
-            addTask(tasks, new Deadline(description, by));
+            addTask(tasks, new Deadline(description, by), storage);
             return;
         }
         if (command.equals("event") || command.startsWith("event ")) {
@@ -98,7 +112,7 @@ public class Quackers {
             requireText(description, "Quack? Give me an event description!");
             requireText(from, "Quack? Give me an event start time!");
             requireText(to, "Quack? Give me an event end time!");
-            addTask(tasks, new Event(description, from, to));
+            addTask(tasks, new Event(description, from, to), storage);
             return;
         }
         throw new QuackersException("Quack? I don't know what that means :-(");
@@ -110,11 +124,12 @@ public class Quackers {
      * @param command the entered status command
      * @param keyword the command keyword, either {@code mark} or {@code unmark}
      * @param tasks the task storage
+     * @param storage the file used to persist task changes
      * @param isDone whether the task should be marked done
      * @throws QuackersException if the task number is missing, invalid, or not in the list
      */
     private static void updateTaskStatus(String command, String keyword, List<Task> tasks,
-                                         boolean isDone) throws QuackersException {
+                                         Storage storage, boolean isDone) throws QuackersException {
         String numberText = command.substring(keyword.length()).trim();
         try {
             int taskIndex = Integer.parseInt(numberText) - 1;
@@ -123,9 +138,13 @@ public class Quackers {
             }
             if (isDone) {
                 tasks.get(taskIndex).markAsDone();
-                System.out.println("     Nice! I've marked this task as done:");
             } else {
                 tasks.get(taskIndex).markAsUndone();
+            }
+            storage.save(tasks);
+            if (isDone) {
+                System.out.println("     Nice! I've marked this task as done:");
+            } else {
                 System.out.println("     OK, I've marked this task as not done yet:");
             }
             System.out.println("       " + tasks.get(taskIndex));
@@ -140,9 +159,11 @@ public class Quackers {
      *
      * @param command the delete command entered by the user
      * @param tasks the task list
+     * @param storage the file used to persist task changes
      * @throws QuackersException if the task number is missing, invalid, or not in the list
      */
-    private static void deleteTask(String command, List<Task> tasks) throws QuackersException {
+    private static void deleteTask(String command, List<Task> tasks, Storage storage)
+            throws QuackersException {
         String numberText = command.substring("delete".length()).trim();
         try {
             int taskIndex = Integer.parseInt(numberText) - 1;
@@ -150,6 +171,7 @@ public class Quackers {
                 throw new QuackersException("Quack? Please enter a task number from the list.");
             }
             Task removedTask = tasks.remove(taskIndex);
+            storage.save(tasks);
             System.out.println("     Noted. I've removed this task:");
             System.out.println("       " + removedTask);
             System.out.println("     Now you have " + tasks.size() + " tasks in the list.");
@@ -176,9 +198,13 @@ public class Quackers {
      *
      * @param tasks the task list
      * @param task the task to add
+     * @param storage the file used to persist task changes
+     * @throws QuackersException if the changed task list cannot be saved
      */
-    private static void addTask(List<Task> tasks, Task task) {
+    private static void addTask(List<Task> tasks, Task task, Storage storage)
+            throws QuackersException {
         tasks.add(task);
+        storage.save(tasks);
         System.out.println("     Got it. I've added this task:");
         System.out.println("       " + task);
         System.out.println("     Now you have " + tasks.size() + " tasks in the list.");

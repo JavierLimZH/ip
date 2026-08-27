@@ -11,8 +11,8 @@ public class Task {
     /**
      * Creates an incomplete task of the given type.
      *
-     * @param type the kind of task
-     * @param description the work the user wants to remember
+     * @param type the kind of task.
+     * @param description the work the user wants to remember.
      */
     public Task(TaskType type, String description) {
         this.type = type;

@@ -20,7 +20,7 @@ public class Storage {
     /**
      * Creates storage backed by the specified file.
      *
-     * @param filePath the relative or absolute path of the task file
+     * @param filePath the relative or absolute path of the task file.
      */
     public Storage(Path filePath) {
         this.filePath = filePath;
@@ -51,7 +51,7 @@ public class Storage {
     /**
      * Saves all tasks, creating the parent directory and task file when necessary.
      *
-     * @param tasks the tasks to save
+     * @param tasks the tasks to save.
      * @throws QuackersException if the tasks cannot be written
      */
     public void save(List<Task> tasks) throws QuackersException {
@@ -74,52 +74,52 @@ public class Storage {
     /**
      * Converts one saved record into its corresponding task object.
      *
-     * @param line the tab-separated task record
+     * @param line the tab-separated task record.
      * @return the restored task
      * @throws QuackersException if the record has an invalid format
      */
     private Task parseTask(String line) throws QuackersException {
         String[] fields = line.split(FIELD_SEPARATOR, -1);
         if (fields.length < 3) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
 
         Task task = switch (fields[0]) {
             case "T" -> createTodo(fields);
             case "D" -> createDeadline(fields);
             case "E" -> createEvent(fields);
-            default -> throw invalidDataException();
+            default -> throw createInvalidDataException();
         };
 
         if (fields[1].equals("1")) {
             task.markAsDone();
         } else if (!fields[1].equals("0")) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return task;
     }
 
     private Task createTodo(String[] fields) throws QuackersException {
         if (fields.length != 3) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return new Todo(fields[2]);
     }
 
     private Task createDeadline(String[] fields) throws QuackersException {
         if (fields.length != 4) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         try {
             return new Deadline(fields[2], LocalDate.parse(fields[3]));
         } catch (DateTimeParseException error) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
     }
 
     private Task createEvent(String[] fields) throws QuackersException {
         if (fields.length != 5) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return new Event(fields[2], fields[3], fields[4]);
     }
@@ -127,7 +127,7 @@ public class Storage {
     /**
      * Converts one task into a tab-separated record suitable for saving.
      *
-     * @param task the task to format
+     * @param task the task to format.
      * @return the task's saved representation
      * @throws QuackersException if the task type and task class do not agree
      */
@@ -138,22 +138,22 @@ public class Storage {
                     task.getType().getSymbol(), status, task.getDescription());
             case DEADLINE -> {
                 if (!(task instanceof Deadline deadline)) {
-                    throw invalidDataException();
+                    throw createInvalidDataException();
                 }
                 yield String.join(FIELD_SEPARATOR, task.getType().getSymbol(), status,
-                        task.getDescription(), deadline.getBy().toString());
+                        task.getDescription(), deadline.getDueDate().toString());
             }
             case EVENT -> {
                 if (!(task instanceof Event event)) {
-                    throw invalidDataException();
+                    throw createInvalidDataException();
                 }
                 yield String.join(FIELD_SEPARATOR, task.getType().getSymbol(), status,
-                        task.getDescription(), event.getFrom(), event.getTo());
+                        task.getDescription(), event.getStartTime(), event.getEndTime());
             }
         };
     }
 
-    private QuackersException invalidDataException() {
+    private QuackersException createInvalidDataException() {
         return new QuackersException("Quack! The saved task file contains invalid data.");
     }
 }

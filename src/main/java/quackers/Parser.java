@@ -13,7 +13,7 @@ public class Parser {
     /**
      * Determines the type of a command.
      *
-     * @param command the complete command entered by the user
+     * @param command the complete command entered by the user.
      * @return the matching command type
      * @throws QuackersException if the command keyword is unknown
      */
@@ -48,8 +48,8 @@ public class Parser {
     /**
      * Extracts a zero-based task index from a numbered command.
      *
-     * @param command the complete command
-     * @param keyword the command keyword to remove
+     * @param command the complete command.
+     * @param keyword the command keyword to remove.
      * @return the zero-based task index
      * @throws QuackersException if the task number is missing or not an integer
      */
@@ -65,7 +65,7 @@ public class Parser {
     /**
      * Creates a to-do from its command.
      *
-     * @param command the complete to-do command
+     * @param command the complete to-do command.
      * @return the parsed to-do task
      * @throws QuackersException if the description is missing
      */
@@ -80,7 +80,7 @@ public class Parser {
     /**
      * Creates a deadline from its command.
      *
-     * @param command the complete deadline command
+     * @param command the complete deadline command.
      * @return the parsed deadline task
      * @throws QuackersException if a field or date is invalid
      */
@@ -100,7 +100,7 @@ public class Parser {
     /**
      * Creates an event from its command.
      *
-     * @param command the complete event command
+     * @param command the complete event command.
      * @return the parsed event task
      * @throws QuackersException if a required field is missing
      */

@@ -38,7 +38,7 @@ class ParserTest {
         Deadline deadline = Parser.parseDeadline("deadline submit report /by 2027-02-28");
 
         assertAll(
-                () -> assertEquals(LocalDate.of(2027, 2, 28), deadline.getBy()),
+                () -> assertEquals(LocalDate.of(2027, 2, 28), deadline.getDueDate()),
                 () -> assertEquals("[D][ ] submit report (by: Feb 28 2027)", deadline.toString())
         );
     }

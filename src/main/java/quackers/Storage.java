@@ -81,45 +81,45 @@ public class Storage {
     private Task parseTask(String line) throws QuackersException {
         String[] fields = line.split(FIELD_SEPARATOR, -1);
         if (fields.length < 3) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
 
         Task task = switch (fields[0]) {
             case "T" -> createTodo(fields);
             case "D" -> createDeadline(fields);
             case "E" -> createEvent(fields);
-            default -> throw invalidDataException();
+            default -> throw createInvalidDataException();
         };
 
         if (fields[1].equals("1")) {
             task.markAsDone();
         } else if (!fields[1].equals("0")) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return task;
     }
 
     private Task createTodo(String[] fields) throws QuackersException {
         if (fields.length != 3) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return new Todo(fields[2]);
     }
 
     private Task createDeadline(String[] fields) throws QuackersException {
         if (fields.length != 4) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         try {
             return new Deadline(fields[2], LocalDate.parse(fields[3]));
         } catch (DateTimeParseException error) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
     }
 
     private Task createEvent(String[] fields) throws QuackersException {
         if (fields.length != 5) {
-            throw invalidDataException();
+            throw createInvalidDataException();
         }
         return new Event(fields[2], fields[3], fields[4]);
     }
@@ -138,22 +138,22 @@ public class Storage {
                     task.getType().getSymbol(), status, task.getDescription());
             case DEADLINE -> {
                 if (!(task instanceof Deadline deadline)) {
-                    throw invalidDataException();
+                    throw createInvalidDataException();
                 }
                 yield String.join(FIELD_SEPARATOR, task.getType().getSymbol(), status,
-                        task.getDescription(), deadline.getBy().toString());
+                        task.getDescription(), deadline.getDueDate().toString());
             }
             case EVENT -> {
                 if (!(task instanceof Event event)) {
-                    throw invalidDataException();
+                    throw createInvalidDataException();
                 }
                 yield String.join(FIELD_SEPARATOR, task.getType().getSymbol(), status,
-                        task.getDescription(), event.getFrom(), event.getTo());
+                        task.getDescription(), event.getStartTime(), event.getEndTime());
             }
         };
     }
 
-    private QuackersException invalidDataException() {
+    private QuackersException createInvalidDataException() {
         return new QuackersException("Quack! The saved task file contains invalid data.");
     }
 }

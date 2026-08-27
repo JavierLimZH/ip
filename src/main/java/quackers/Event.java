@@ -4,28 +4,28 @@ package quackers;
  * Represents a task that happens between a start and end time.
  */
 public class Event extends Task {
-    private final String from;
-    private final String to;
+    private final String startTime;
+    private final String endTime;
 
     /**
      * Creates an incomplete event task.
      *
      * @param description the event description
-     * @param from the event start time, kept as text
-     * @param to the event end time, kept as text
+     * @param startTime the event start time, kept as text
+     * @param endTime the event end time, kept as text
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, String startTime, String endTime) {
         super(TaskType.EVENT, description);
-        this.from = from;
-        this.to = to;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
-    public String getFrom() {
-        return from;
+    public String getStartTime() {
+        return startTime;
     }
 
-    public String getTo() {
-        return to;
+    public String getEndTime() {
+        return endTime;
     }
 
     /**
@@ -35,6 +35,6 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return super.toString() + " (from: " + from + " to: " + to + ")";
+        return super.toString() + " (from: " + startTime + " to: " + endTime + ")";
     }
 }

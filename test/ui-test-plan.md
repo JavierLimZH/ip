@@ -183,3 +183,47 @@ delete 1
 ```text
      Quack? Please enter a task number from the list.
 ```
+
+## Test: Find tasks by description
+
+Aim: Confirm that find searches task descriptions without regard to letter case and renumbers matches.
+
+### Commands
+
+```text
+todo read book
+deadline return Book /by 2019-06-06
+event project meeting /from book room /to 4pm
+find BOOK
+find
+```
+
+### Expected outputs
+
+```text
+     Got it. I've added this task:
+       [T][ ] read book
+     Now you have 1 tasks in the list.
+```
+
+```text
+     Got it. I've added this task:
+       [D][ ] return Book (by: Jun 6 2019)
+     Now you have 2 tasks in the list.
+```
+
+```text
+     Got it. I've added this task:
+       [E][ ] project meeting (from: book room to: 4pm)
+     Now you have 3 tasks in the list.
+```
+
+```text
+     Here are the matching tasks in your list:
+     1.[T][ ] read book
+     2.[D][ ] return Book (by: Jun 6 2019)
+```
+
+```text
+     Quack? Give me a keyword to find!
+```

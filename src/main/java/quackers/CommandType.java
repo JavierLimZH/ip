@@ -6,6 +6,7 @@ package quackers;
 public enum CommandType {
     BYE,
     LIST,
+    FIND,
     MARK,
     UNMARK,
     DELETE,

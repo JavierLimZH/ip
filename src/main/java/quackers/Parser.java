@@ -24,6 +24,9 @@ public class Parser {
         if (command.equals("list")) {
             return CommandType.LIST;
         }
+        if (hasKeyword(command, "find")) {
+            return CommandType.FIND;
+        }
         if (hasKeyword(command, "mark")) {
             return CommandType.MARK;
         }
@@ -60,6 +63,19 @@ public class Parser {
         } catch (NumberFormatException error) {
             throw new QuackersException("Quack? Please enter a valid task number.");
         }
+    }
+
+    /**
+     * Extracts the keyword from a find command.
+     *
+     * @param command the complete find command
+     * @return the keyword to search for
+     * @throws QuackersException if the keyword is missing
+     */
+    public static String parseFindKeyword(String command) throws QuackersException {
+        String keyword = command.substring("find".length()).trim();
+        requireText(keyword, "Quack? Give me a keyword to find!");
+        return keyword;
     }
 
     /**

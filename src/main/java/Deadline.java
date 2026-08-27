@@ -11,7 +11,7 @@ public class Deadline extends Task {
      * @param by the deadline, kept as text
      */
     public Deadline(String description, String by) {
-        super(description);
+        super(TaskType.DEADLINE, description);
         this.by = by;
     }
 
@@ -22,6 +22,6 @@ public class Deadline extends Task {
      */
     @Override
     public String toString() {
-        return "[D][" + getStatusIcon() + "] " + getDescription() + " (by: " + by + ")";
+        return super.toString() + " (by: " + by + ")";
     }
 }

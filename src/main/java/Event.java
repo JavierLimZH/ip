@@ -13,7 +13,7 @@ public class Event extends Task {
      * @param to the event end time, kept as text
      */
     public Event(String description, String from, String to) {
-        super(description);
+        super(TaskType.EVENT, description);
         this.from = from;
         this.to = to;
     }
@@ -25,7 +25,6 @@ public class Event extends Task {
      */
     @Override
     public String toString() {
-        return "[E][" + getStatusIcon() + "] " + getDescription()
-                + " (from: " + from + " to: " + to + ")";
+        return super.toString() + " (from: " + from + " to: " + to + ")";
     }
 }

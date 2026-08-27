@@ -2,17 +2,29 @@
  * Represents one task and whether the user has completed it.
  */
 public class Task {
+    private final TaskType type;
     private final String description;
     private boolean isDone;
 
     /**
-     * Creates an incomplete task with the given description.
+     * Creates an incomplete task of the given type.
      *
+     * @param type the kind of task
      * @param description the work the user wants to remember
      */
-    public Task(String description) {
+    public Task(TaskType type, String description) {
+        this.type = type;
         this.description = description;
         this.isDone = false;
+    }
+
+    /**
+     * Returns the kind of this task.
+     *
+     * @return the task type
+     */
+    public TaskType getType() {
+        return type;
     }
 
     /**
@@ -50,10 +62,10 @@ public class Task {
     /**
      * Formats this task for display in command responses and task lists.
      *
-     * @return the status icon followed by the task description
+     * @return the type, status icon, and task description
      */
     @Override
     public String toString() {
-        return "[" + getStatusIcon() + "] " + description;
+        return "[" + type.getSymbol() + "][" + getStatusIcon() + "] " + description;
     }
 }

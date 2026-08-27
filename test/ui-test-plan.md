@@ -26,20 +26,41 @@ list
 
 ## Test: Add a deadline
 
-Aim: Confirm that deadline dates are stored as text and displayed with the deadline marker.
+Aim: Confirm that an ISO deadline date is parsed and displayed in a friendlier format.
 
 ### Commands
 
 ```text
-deadline return book /by Sunday
+deadline return book /by 2019-12-02
 ```
 
 ### Expected outputs
 
 ```text
      Got it. I've added this task:
-       [D][ ] return book (by: Sunday)
+       [D][ ] return book (by: Dec 2 2019)
      Now you have 1 tasks in the list.
+```
+
+## Test: Reject invalid deadline dates
+
+Aim: Confirm that deadlines reject non-ISO and impossible dates with a helpful error.
+
+### Commands
+
+```text
+deadline return book /by Sunday
+deadline return book /by 2019-02-30
+```
+
+### Expected outputs
+
+```text
+     Quack? Use yyyy-MM-dd for the deadline date.
+```
+
+```text
+     Quack? Use yyyy-MM-dd for the deadline date.
 ```
 
 ## Test: Add an event
@@ -109,7 +130,7 @@ Aim: Confirm that deleting a task removes the selected item and that remaining t
 
 ```text
 todo read book
-deadline return book /by June 6th
+deadline return book /by 2019-06-06
 event project meeting /from Aug 6th 2pm /to 4pm
 delete 3
 list
@@ -125,7 +146,7 @@ list
 
 ```text
      Got it. I've added this task:
-       [D][ ] return book (by: June 6th)
+       [D][ ] return book (by: Jun 6 2019)
      Now you have 2 tasks in the list.
 ```
 
@@ -144,7 +165,7 @@ list
 ```text
      Here are the tasks in your list:
      1.[T][ ] read book
-     2.[D][ ] return book (by: June 6th)
+     2.[D][ ] return book (by: Jun 6 2019)
 ```
 
 ## Test: Reject an invalid delete number

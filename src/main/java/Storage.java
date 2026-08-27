@@ -2,6 +2,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -106,7 +108,11 @@ public class Storage {
         if (fields.length != 4) {
             throw invalidDataException();
         }
-        return new Deadline(fields[2], fields[3]);
+        try {
+            return new Deadline(fields[2], LocalDate.parse(fields[3]));
+        } catch (DateTimeParseException error) {
+            throw invalidDataException();
+        }
     }
 
     private Task createEvent(String[] fields) throws QuackersException {
@@ -133,7 +139,7 @@ public class Storage {
                     throw invalidDataException();
                 }
                 yield String.join(FIELD_SEPARATOR, task.getType().getSymbol(), status,
-                        task.getDescription(), deadline.getBy());
+                        task.getDescription(), deadline.getBy().toString());
             }
             case EVENT -> {
                 if (!(task instanceof Event event)) {

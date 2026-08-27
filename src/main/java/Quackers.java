@@ -1,4 +1,6 @@
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -94,9 +96,10 @@ public class Quackers {
                 throw new QuackersException("Quack? Use /by to give the deadline.");
             }
             String description = command.substring(9, byMarker).trim();
-            String by = command.substring(byMarker + 5).trim();
+            String byText = command.substring(byMarker + 5).trim();
             requireText(description, "Quack? Give me a deadline description!");
-            requireText(by, "Quack? Give me a deadline date!");
+            requireText(byText, "Quack? Give me a deadline date!");
+            LocalDate by = parseDeadlineDate(byText);
             addTask(tasks, new Deadline(description, by), storage);
             return;
         }
@@ -190,6 +193,21 @@ public class Quackers {
     private static void requireText(String text, String errorMessage) throws QuackersException {
         if (text.isEmpty()) {
             throw new QuackersException(errorMessage);
+        }
+    }
+
+    /**
+     * Parses a deadline date written in the required ISO format.
+     *
+     * @param dateText the date supplied by the user
+     * @return the parsed deadline date
+     * @throws QuackersException if the date is invalid or uses another format
+     */
+    private static LocalDate parseDeadlineDate(String dateText) throws QuackersException {
+        try {
+            return LocalDate.parse(dateText);
+        } catch (DateTimeParseException error) {
+            throw new QuackersException("Quack? Use yyyy-MM-dd for the deadline date.");
         }
     }
 

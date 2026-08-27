@@ -19,7 +19,7 @@ public class TaskList {
     /**
      * Creates a task list containing the supplied tasks.
      *
-     * @param tasks the initial tasks
+     * @param tasks the initial tasks.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
@@ -46,7 +46,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task the task to add
+     * @param task the task to add.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -55,7 +55,7 @@ public class TaskList {
     /**
      * Removes and returns the task at a zero-based index.
      *
-     * @param taskIndex the zero-based task index
+     * @param taskIndex the zero-based task index.
      * @return the removed task
      * @throws QuackersException if the index is outside the list
      */
@@ -67,8 +67,8 @@ public class TaskList {
     /**
      * Changes and returns the completion status of a numbered task.
      *
-     * @param taskIndex the zero-based task index
-     * @param isDone whether the task should be completed
+     * @param taskIndex the zero-based task index.
+     * @param isDone whether the task should be completed.
      * @return the updated task
      * @throws QuackersException if the index is outside the list
      */

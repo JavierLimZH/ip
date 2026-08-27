@@ -67,7 +67,7 @@ public class Ui implements AutoCloseable {
     /**
      * Displays an error message.
      *
-     * @param message the user-facing explanation
+     * @param message the user-facing explanation.
      */
     public void showError(String message) {
         System.out.println("     " + message);
@@ -76,7 +76,7 @@ public class Ui implements AutoCloseable {
     /**
      * Displays all tasks with one-based numbering.
      *
-     * @param tasks the tasks to display
+     * @param tasks the tasks to display.
      */
     public void showTasks(List<Task> tasks) {
         System.out.println("     Here are the tasks in your list:");
@@ -88,8 +88,8 @@ public class Ui implements AutoCloseable {
     /**
      * Displays confirmation that a task was added.
      *
-     * @param task the added task
-     * @param taskCount the resulting number of tasks
+     * @param task the added task.
+     * @param taskCount the resulting number of tasks.
      */
     public void showTaskAdded(Task task, int taskCount) {
         System.out.println("     Got it. I've added this task:");
@@ -100,8 +100,8 @@ public class Ui implements AutoCloseable {
     /**
      * Displays confirmation that a task was removed.
      *
-     * @param task the removed task
-     * @param taskCount the resulting number of tasks
+     * @param task the removed task.
+     * @param taskCount the resulting number of tasks.
      */
     public void showTaskDeleted(Task task, int taskCount) {
         System.out.println("     Noted. I've removed this task:");
@@ -112,8 +112,8 @@ public class Ui implements AutoCloseable {
     /**
      * Displays confirmation that a task status changed.
      *
-     * @param task the updated task
-     * @param isDone whether the task is now complete
+     * @param task the updated task.
+     * @param isDone whether the task is now complete.
      */
     public void showTaskStatusChanged(Task task, boolean isDone) {
         if (isDone) {

@@ -14,7 +14,7 @@ public class Quackers {
     /**
      * Creates Quackers using the specified file for persistent task data.
      *
-     * @param filePath the task data file
+     * @param filePath the task data file.
      */
     public Quackers(Path filePath) {
         this.storage = new Storage(filePath);
@@ -64,7 +64,7 @@ public class Quackers {
     /**
      * Starts Quackers with its default relative task-file path.
      *
-     * @param args command-line arguments, which are not used
+     * @param args command-line arguments, which are not used.
      */
     public static void main(String[] args) {
         new Quackers(Path.of("data", "quackers.txt")).run();
@@ -73,7 +73,7 @@ public class Quackers {
     /**
      * Executes one command.
      *
-     * @param command the complete command entered by the user
+     * @param command the complete command entered by the user.
      * @return {@code true} when the command requests application exit
      * @throws QuackersException if the command is invalid or a save fails
      */

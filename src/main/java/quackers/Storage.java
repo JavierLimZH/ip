@@ -20,7 +20,7 @@ public class Storage {
     /**
      * Creates storage backed by the specified file.
      *
-     * @param filePath the relative or absolute path of the task file
+     * @param filePath the relative or absolute path of the task file.
      */
     public Storage(Path filePath) {
         this.filePath = filePath;
@@ -51,7 +51,7 @@ public class Storage {
     /**
      * Saves all tasks, creating the parent directory and task file when necessary.
      *
-     * @param tasks the tasks to save
+     * @param tasks the tasks to save.
      * @throws QuackersException if the tasks cannot be written
      */
     public void save(List<Task> tasks) throws QuackersException {
@@ -74,7 +74,7 @@ public class Storage {
     /**
      * Converts one saved record into its corresponding task object.
      *
-     * @param line the tab-separated task record
+     * @param line the tab-separated task record.
      * @return the restored task
      * @throws QuackersException if the record has an invalid format
      */
@@ -127,7 +127,7 @@ public class Storage {
     /**
      * Converts one task into a tab-separated record suitable for saving.
      *
-     * @param task the task to format
+     * @param task the task to format.
      * @return the task's saved representation
      * @throws QuackersException if the task type and task class do not agree
      */

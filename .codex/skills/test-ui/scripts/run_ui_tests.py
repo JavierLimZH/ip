@@ -55,7 +55,7 @@ def compile_program() -> None:
     """Compile the application into a disposable directory with Java 25."""
     shutil.rmtree(CLASSES, ignore_errors=True)
     CLASSES.mkdir()
-    sources = sorted(str(path) for path in (ROOT / "src" / "main" / "java").glob("*.java"))
+    sources = sorted(str(path) for path in (ROOT / "src" / "main" / "java").rglob("*.java"))
     result = subprocess.run(["javac", "-d", str(CLASSES), *sources], text=True, capture_output=True)
     if result.returncode:
         raise RuntimeError("Compilation failed:\n" + result.stderr)
@@ -88,7 +88,7 @@ def main() -> int:
         return 2
     for case in cases:
         with tempfile.TemporaryDirectory(prefix="quackers-ui-test-") as test_directory:
-            result = subprocess.run(["java", "-cp", str(CLASSES), "Quackers"],
+            result = subprocess.run(["java", "-cp", str(CLASSES), "quackers.Quackers"],
                                     input="\n".join(case.commands + ["bye"]) + "\n",
                                     text=True, capture_output=True, cwd=test_directory)
         actual = responses(result.stdout)

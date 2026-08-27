@@ -1,3 +1,5 @@
+package quackers;
+
 /**
  * Identifies the commands understood by Quackers.
  */

@@ -1,3 +1,5 @@
+package quackers;
+
 /**
  * Represents an error caused by an invalid Quackers command.
  */

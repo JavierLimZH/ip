@@ -1,3 +1,5 @@
+package quackers;
+
 /**
  * Represents one task and whether the user has completed it.
  */

@@ -1,3 +1,5 @@
+package quackers;
+
 /**
  * Identifies the supported kinds of tasks and their display symbols.
  */

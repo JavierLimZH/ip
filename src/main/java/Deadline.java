@@ -15,6 +15,10 @@ public class Deadline extends Task {
         this.by = by;
     }
 
+    public String getBy() {
+        return by;
+    }
+
     /**
      * Formats this deadline with its type, completion status, and due time.
      *

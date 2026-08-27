@@ -6,6 +6,7 @@ import re
 import shutil
 import subprocess
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -86,9 +87,10 @@ def main() -> int:
         print(f"Cannot start UI tests: {error}", file=sys.stderr)
         return 2
     for case in cases:
-        result = subprocess.run(["java", "-cp", str(CLASSES), "Quackers"],
-                                input="\n".join(case.commands + ["bye"]) + "\n",
-                                text=True, capture_output=True)
+        with tempfile.TemporaryDirectory(prefix="quackers-ui-test-") as test_directory:
+            result = subprocess.run(["java", "-cp", str(CLASSES), "Quackers"],
+                                    input="\n".join(case.commands + ["bye"]) + "\n",
+                                    text=True, capture_output=True, cwd=test_directory)
         actual = responses(result.stdout)
         for command, expected, response in zip(case.commands, case.expected_outputs, actual):
             if expected.replace("\r\n", "\n") != response:

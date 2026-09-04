@@ -15,6 +15,7 @@ bin/
 
 # Temp files
 _temp/
+/javafxtut/
 
 # User task data
 /data/

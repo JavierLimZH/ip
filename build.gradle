@@ -14,6 +14,23 @@ repositories {
 }
 
 dependencies {
+    // JavaFX, as per the sample build.gradle in the se-education JavaFX tutorial.
+    // Every OS classifier is listed so the project builds and runs on any machine.
+    String javaFxVersion = '17.0.7'
+
+    implementation("org.openjfx:javafx-base:${javaFxVersion}:win")
+    implementation("org.openjfx:javafx-base:${javaFxVersion}:mac")
+    implementation("org.openjfx:javafx-base:${javaFxVersion}:linux")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}:win")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}:mac")
+    implementation("org.openjfx:javafx-controls:${javaFxVersion}:linux")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:win")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:mac")
+    implementation("org.openjfx:javafx-fxml:${javaFxVersion}:linux")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:win")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:mac")
+    implementation("org.openjfx:javafx-graphics:${javaFxVersion}:linux")
+
     String jUnitVersion = '5.14.4'
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
@@ -37,7 +54,9 @@ test {
 }
 
 application {
-    mainClass = 'quackers.Quackers'
+    // Launcher, not Main: a main class that extends Application makes the JVM
+    // demand a modular JavaFX runtime, which we do not have on the classpath.
+    mainClass = 'quackers.Launcher'
 }
 
 jar {

@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import re
-import shutil
 import subprocess
 import sys
 import tempfile
@@ -12,7 +11,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[4]
 PLAN = ROOT / "test" / "ui-test-plan.md"
-CLASSES = ROOT / ".tmp-ui-test-classes"
+CLASSES = ROOT / "build" / "classes" / "java" / "main"
 SEPARATOR = "_" * 60
 
 
@@ -52,13 +51,17 @@ def parse_plan(plan: str) -> list[TestCase]:
 
 
 def compile_program() -> None:
-    """Compile the application into a disposable directory with Java 25."""
-    shutil.rmtree(CLASSES, ignore_errors=True)
-    CLASSES.mkdir()
-    sources = sorted(str(path) for path in (ROOT / "src" / "main" / "java").rglob("*.java"))
-    result = subprocess.run(["javac", "-d", str(CLASSES), *sources], text=True, capture_output=True)
+    """Compile the application with Gradle so third-party dependencies are available."""
+    wrapper = ROOT / ("gradlew.bat" if sys.platform == "win32" else "gradlew")
+    result = subprocess.run(
+        [str(wrapper), "classes", "--no-daemon"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+    )
     if result.returncode:
-        raise RuntimeError("Compilation failed:\n" + result.stderr)
+        details = "\n".join(part for part in (result.stdout, result.stderr) if part)
+        raise RuntimeError("Gradle compilation failed:\n" + details)
 
 
 def responses(output: str) -> list[str]:

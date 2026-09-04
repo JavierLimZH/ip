@@ -4,12 +4,20 @@ import java.nio.file.Path;
 
 /**
  * Coordinates command parsing, task operations, storage, and user interaction.
+ *
+ * <p>This class is front-end agnostic: {@link #run()} drives a console session, while
+ * {@link #getResponse(String)} answers a single command and hands the reply back to a caller
+ * such as the JavaFX GUI.
  */
 public class Quackers {
+    /** Default location of the task data file, relative to the working directory. */
+    public static final Path DEFAULT_FILE_PATH = Path.of("data", "quackers.txt");
+
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
     private final String loadingError;
+    private boolean isExitRequested;
 
     /**
      * Creates Quackers using the specified file for persistent task data.
@@ -33,27 +41,26 @@ public class Quackers {
     }
 
     /**
-     * Runs the command loop until the user exits or input ends.
+     * Creates Quackers using the default task data file.
+     */
+    public Quackers() {
+        this(DEFAULT_FILE_PATH);
+    }
+
+    /**
+     * Runs the console command loop until the user exits or input ends.
      */
     public void run() {
         ui.showWelcome();
         if (loadingError != null) {
-            ui.showError(loadingError);
+            ui.show(ui.getErrorMessage(loadingError));
         }
 
         try {
-            while (ui.hasNextCommand()) {
+            while (!isExitRequested && ui.hasNextCommand()) {
                 String command = ui.readCommand();
                 ui.showLine();
-                try {
-                    if (executeCommand(command)) {
-                        ui.showGoodbye();
-                        ui.showLine();
-                        break;
-                    }
-                } catch (QuackersException error) {
-                    ui.showError(error.getMessage());
-                }
+                ui.show(getResponse(command));
                 ui.showLine();
             }
         } finally {
@@ -62,74 +69,111 @@ public class Quackers {
     }
 
     /**
+     * Answers a single command.
+     *
+     * <p>Unlike {@link #executeCommand(String)}, this never throws: an invalid command is
+     * reported as an ordinary reply, because both front ends want to show the problem to the
+     * user and carry on.
+     *
+     * @param command the complete command entered by the user.
+     * @return the reply to show to the user.
+     */
+    public String getResponse(String command) {
+        try {
+            return executeCommand(command);
+        } catch (QuackersException error) {
+            return ui.getErrorMessage(error.getMessage());
+        }
+    }
+
+    /**
+     * Returns the greeting to show when a session starts.
+     *
+     * @return the greeting text.
+     */
+    public String getWelcomeMessage() {
+        return ui.getWelcomeMessage();
+    }
+
+    /**
+     * Returns the problem encountered while loading saved tasks, if any.
+     *
+     * @return the error text, or {@code null} when the tasks loaded cleanly.
+     */
+    public String getLoadingError() {
+        return loadingError;
+    }
+
+    /**
+     * Returns whether the user has asked to exit (i.e., entered {@code bye}).
+     *
+     * @return {@code true} once an exit has been requested.
+     */
+    public boolean isExitRequested() {
+        return isExitRequested;
+    }
+
+    /**
      * Starts Quackers with its default relative task-file path.
      *
      * @param args command-line arguments, which are not used.
      */
     public static void main(String[] args) {
-        new Quackers(Path.of("data", "quackers.txt")).run();
+        new Quackers().run();
     }
 
     /**
-     * Executes one command.
+     * Executes one command and returns the reply to show.
      *
      * @param command the complete command entered by the user.
-     * @return {@code true} when the command requests application exit
-     * @throws QuackersException if the command is invalid or a save fails
+     * @return the reply to show to the user.
+     * @throws QuackersException if the command is invalid or a save fails.
      */
-    private boolean executeCommand(String command) throws QuackersException {
+    private String executeCommand(String command) throws QuackersException {
         CommandType commandType = Parser.parseCommandType(command);
         switch (commandType) {
             case BYE:
-                return true;
+                isExitRequested = true;
+                return ui.getGoodbyeMessage();
             case LIST:
-                ui.showTasks(tasks.getTasks());
-                break;
+                return ui.getTasksMessage(tasks.getTasks());
             case FIND:
-                ui.showMatchingTasks(tasks.find(Parser.parseFindKeyword(command)));
-                break;
+                return ui.getMatchingTasksMessage(tasks.find(Parser.parseFindKeyword(command)));
             case MARK:
-                updateTaskStatus(command, "mark", true);
-                break;
+                return updateTaskStatus(command, "mark", true);
             case UNMARK:
-                updateTaskStatus(command, "unmark", false);
-                break;
+                return updateTaskStatus(command, "unmark", false);
             case DELETE:
-                deleteTask(command);
-                break;
+                return deleteTask(command);
             case TODO:
-                addTask(Parser.parseTodo(command));
-                break;
+                return addTask(Parser.parseTodo(command));
             case DEADLINE:
-                addTask(Parser.parseDeadline(command));
-                break;
+                return addTask(Parser.parseDeadline(command));
             case EVENT:
-                addTask(Parser.parseEvent(command));
-                break;
+                return addTask(Parser.parseEvent(command));
             default:
                 throw new QuackersException("Quack? I don't know what that means :-(");
         }
-        return false;
     }
 
-    private void updateTaskStatus(String command, String keyword, boolean isDone)
+    private String updateTaskStatus(String command, String keyword, boolean isDone)
             throws QuackersException {
         int taskIndex = Parser.parseTaskIndex(command, keyword);
         Task task = tasks.updateStatus(taskIndex, isDone);
         storage.save(tasks.getTasks());
-        ui.showTaskStatusChanged(task, isDone);
+        return ui.getTaskStatusChangedMessage(task, isDone);
     }
 
-    private void deleteTask(String command) throws QuackersException {
+    private String deleteTask(String command) throws QuackersException {
         int taskIndex = Parser.parseTaskIndex(command, "delete");
         Task removedTask = tasks.delete(taskIndex);
         storage.save(tasks.getTasks());
-        ui.showTaskDeleted(removedTask, tasks.size());
+        return ui.getTaskDeletedMessage(removedTask, tasks.size());
     }
 
-    private void addTask(Task task) throws QuackersException {
+    private String addTask(Task task) throws QuackersException {
         tasks.add(task);
         storage.save(tasks.getTasks());
-        ui.showTaskAdded(task, tasks.size());
+        return ui.getTaskAddedMessage(task, tasks.size());
     }
 }

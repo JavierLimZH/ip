@@ -73,9 +73,7 @@ public class Parser {
      * @throws QuackersException if the keyword is missing.
      */
     public static String parseFindKeyword(String command) throws QuackersException {
-        String keyword = command.substring("find".length()).trim();
-        requireText(keyword, "Quack? Give me a keyword to find!");
-        return keyword;
+        return parseTextAfterKeyword(command, "find", "Quack? Give me a keyword to find!");
     }
 
     /**
@@ -86,11 +84,7 @@ public class Parser {
      * @throws QuackersException if the description is missing
      */
     public static Todo parseTodo(String command) throws QuackersException {
-        String description = command.length() == "todo".length()
-                ? ""
-                : command.substring("todo".length() + 1).trim();
-        requireText(description, "Quack? Give me a todo description!");
-        return new Todo(description);
+        return new Todo(parseTextAfterKeyword(command, "todo", "Quack? Give me a todo description!"));
     }
 
     /**
@@ -146,6 +140,22 @@ public class Parser {
         } catch (DateTimeParseException error) {
             throw new QuackersException("Quack? Use yyyy-MM-dd for the deadline date.");
         }
+    }
+
+    /**
+     * Extracts non-empty text immediately following a command keyword.
+     *
+     * @param command the complete command
+     * @param keyword the command keyword to remove
+     * @param errorMessage the error to report if no text remains
+     * @return the trimmed command argument
+     * @throws QuackersException if the command has no argument text
+     */
+    private static String parseTextAfterKeyword(String command, String keyword, String errorMessage)
+            throws QuackersException {
+        String text = command.substring(keyword.length()).trim();
+        requireText(text, errorMessage);
+        return text;
     }
 
     private static void requireText(String text, String errorMessage) throws QuackersException {

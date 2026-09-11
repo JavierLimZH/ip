@@ -1,6 +1,5 @@
 package quackers;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,15 +37,13 @@ class StorageTest {
         storage.save(List.of(todo, deadline, event));
         List<Task> loadedTasks = storage.load();
 
-        assertAll(
-                () -> assertTrue(Files.exists(filePath)),
-                () -> assertEquals(3, loadedTasks.size()),
-                () -> assertEquals("[T][ ] read book", loadedTasks.get(0).toString()),
-                () -> assertEquals("[D][X] submit report (by: Feb 28 2027)",
-                        loadedTasks.get(1).toString()),
-                () -> assertEquals("[E][ ] project meeting (from: 2pm to: 4pm)",
-                        loadedTasks.get(2).toString())
-        );
+        assertTrue(Files.exists(filePath));
+        assertEquals(3, loadedTasks.size());
+        assertEquals("[T][ ] read book", loadedTasks.get(0).toString());
+        assertEquals("[D][X] submit report (by: Feb 28 2027)",
+                loadedTasks.get(1).toString());
+        assertEquals("[E][ ] project meeting (from: 2pm to: 4pm)",
+                loadedTasks.get(2).toString());
     }
 
     @Test

@@ -1,6 +1,7 @@
 package quackers;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,5 +28,15 @@ class TaskListTest {
         TaskList tasks = new TaskList(List.of(deadline, event));
 
         assertEquals(List.of(), tasks.find("book"));
+    }
+
+    @Test
+    void updateStatus_note_exceptionThrown() {
+        TaskList tasks = new TaskList(List.of(new Note("keep this information")));
+
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> tasks.updateStatus(0, true));
+
+        assertEquals("Quack? Notes do not have a completion status.", error.getMessage());
     }
 }

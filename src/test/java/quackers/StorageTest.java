@@ -30,20 +30,22 @@ class StorageTest {
         Path filePath = temporaryDirectory.resolve("nested").resolve("tasks.txt");
         Storage storage = new Storage(filePath);
         Todo todo = new Todo("read book");
+        Note note = new Note("bring laptop charger");
         Deadline deadline = new Deadline("submit report", LocalDate.of(2027, 2, 28));
         Event event = new Event("project meeting", "2pm", "4pm");
         deadline.markAsDone();
 
-        storage.save(List.of(todo, deadline, event));
+        storage.save(List.of(todo, note, deadline, event));
         List<Task> loadedTasks = storage.load();
 
         assertTrue(Files.exists(filePath));
-        assertEquals(3, loadedTasks.size());
+        assertEquals(4, loadedTasks.size());
         assertEquals("[T][ ] read book", loadedTasks.get(0).toString());
+        assertEquals("[N] bring laptop charger", loadedTasks.get(1).toString());
         assertEquals("[D][X] submit report (by: Feb 28 2027)",
-                loadedTasks.get(1).toString());
-        assertEquals("[E][ ] project meeting (from: 2pm to: 4pm)",
                 loadedTasks.get(2).toString());
+        assertEquals("[E][ ] project meeting (from: 2pm to: 4pm)",
+                loadedTasks.get(3).toString());
     }
 
     @Test

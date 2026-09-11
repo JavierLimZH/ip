@@ -48,6 +48,15 @@ public class Task {
     }
 
     /**
+     * Returns whether this item has a completion status that can be changed.
+     *
+     * @return {@code true} for actionable tasks
+     */
+    public boolean supportsCompletionStatus() {
+        return true;
+    }
+
+    /**
      * Marks this task as completed.
      */
     public void markAsDone() {

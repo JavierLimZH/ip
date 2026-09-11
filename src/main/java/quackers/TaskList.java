@@ -94,6 +94,9 @@ public class TaskList {
         assert taskIndex >= 0 && taskIndex < tasks.size()
                 : "A validated task index must refer to an existing task.";
         Task task = tasks.get(taskIndex);
+        if (!task.supportsCompletionStatus()) {
+            throw new QuackersException("Quack? Notes do not have a completion status.");
+        }
         if (isDone) {
             task.markAsDone();
         } else {

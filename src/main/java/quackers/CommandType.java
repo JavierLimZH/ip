@@ -11,6 +11,7 @@ public enum CommandType {
     UNMARK,
     DELETE,
     TODO,
+    NOTE,
     DEADLINE,
     EVENT
 }

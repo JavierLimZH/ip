@@ -147,6 +147,8 @@ public class Quackers {
                 return deleteTask(command);
             case TODO:
                 return addTask(Parser.parseTodo(command));
+            case NOTE:
+                return addTask(Parser.parseNote(command));
             case DEADLINE:
                 return addTask(Parser.parseDeadline(command));
             case EVENT:

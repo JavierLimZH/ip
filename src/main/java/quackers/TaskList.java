@@ -76,6 +76,8 @@ public class TaskList {
      */
     public Task delete(int taskIndex) throws QuackersException {
         validateIndex(taskIndex);
+        assert taskIndex >= 0 && taskIndex < tasks.size()
+                : "A validated task index must refer to an existing task.";
         return tasks.remove(taskIndex);
     }
 
@@ -89,6 +91,8 @@ public class TaskList {
      */
     public Task updateStatus(int taskIndex, boolean isDone) throws QuackersException {
         validateIndex(taskIndex);
+        assert taskIndex >= 0 && taskIndex < tasks.size()
+                : "A validated task index must refer to an existing task.";
         Task task = tasks.get(taskIndex);
         if (isDone) {
             task.markAsDone();

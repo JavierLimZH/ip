@@ -39,6 +39,9 @@ public class Parser {
         if (hasKeyword(command, "todo")) {
             return CommandType.TODO;
         }
+        if (hasKeyword(command, "note")) {
+            return CommandType.NOTE;
+        }
         if (hasKeyword(command, "deadline")) {
             return CommandType.DEADLINE;
         }
@@ -85,6 +88,17 @@ public class Parser {
      */
     public static Todo parseTodo(String command) throws QuackersException {
         return new Todo(parseTextAfterKeyword(command, "todo", "Quack? Give me a todo description!"));
+    }
+
+    /**
+     * Creates a note from its command.
+     *
+     * @param command the complete note command
+     * @return the parsed note
+     * @throws QuackersException if the note text is missing
+     */
+    public static Note parseNote(String command) throws QuackersException {
+        return new Note(parseTextAfterKeyword(command, "note", "Quack? Give me note text!"));
     }
 
     /**

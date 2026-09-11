@@ -5,6 +5,7 @@ package quackers;
  */
 public enum TaskType {
     TODO("T"),
+    NOTE("N"),
     DEADLINE("D"),
     EVENT("E");
 

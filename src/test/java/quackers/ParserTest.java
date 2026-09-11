@@ -17,6 +17,7 @@ class ParserTest {
         assertEquals(CommandType.UNMARK, Parser.parseCommandType("unmark 1"));
         assertEquals(CommandType.DELETE, Parser.parseCommandType("delete 1"));
         assertEquals(CommandType.TODO, Parser.parseCommandType("todo read book"));
+        assertEquals(CommandType.NOTE, Parser.parseCommandType("note Bring a laptop charger"));
         assertEquals(CommandType.DEADLINE,
                 Parser.parseCommandType("deadline return book /by 2027-02-28"));
         assertEquals(CommandType.EVENT,
@@ -61,5 +62,20 @@ class ParserTest {
                 QuackersException.class, () -> Parser.parseFindKeyword("find"));
 
         assertEquals("Quack? Give me a keyword to find!", error.getMessage());
+    }
+
+    @Test
+    void parseNote_validText_returnsNote() throws QuackersException {
+        Note note = Parser.parseNote("note Bring a laptop charger");
+
+        assertEquals("[N] Bring a laptop charger", note.toString());
+    }
+
+    @Test
+    void parseNote_missingText_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseNote("note"));
+
+        assertEquals("Quack? Give me note text!", error.getMessage());
     }
 }

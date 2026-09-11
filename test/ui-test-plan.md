@@ -42,6 +42,42 @@ deadline return book /by 2019-12-02
      Now you have 1 tasks in the list.
 ```
 
+## Test: Add, list, and delete a note
+
+Aim: Confirm that a note can be saved with the note marker, listed, and removed like other items.
+
+### Commands
+
+```text
+note Bring a laptop charger
+mark 1
+list
+delete 1
+```
+
+### Expected outputs
+
+```text
+     Got it. I've added this task:
+       [N] Bring a laptop charger
+     Now you have 1 tasks in the list.
+```
+
+```text
+     Quack? Notes do not have a completion status.
+```
+
+```text
+     Here are the tasks in your list:
+     1.[N] Bring a laptop charger
+```
+
+```text
+     Noted. I've removed this task:
+       [N] Bring a laptop charger
+     Now you have 0 tasks in the list.
+```
+
 ## Test: Reject invalid deadline dates
 
 Aim: Confirm that deadlines reject non-ISO and impossible dates with a helpful error.

@@ -86,12 +86,16 @@ public class Storage {
 
         Task task = switch (fields[0]) {
             case "T" -> createTodo(fields);
+            case "N" -> createNote(fields);
             case "D" -> createDeadline(fields);
             case "E" -> createEvent(fields);
             default -> throw createInvalidDataException();
         };
 
         if (fields[1].equals("1")) {
+            if (!task.supportsCompletionStatus()) {
+                throw createInvalidDataException();
+            }
             task.markAsDone();
         } else if (!fields[1].equals("0")) {
             throw createInvalidDataException();
@@ -104,6 +108,13 @@ public class Storage {
             throw createInvalidDataException();
         }
         return new Todo(fields[2]);
+    }
+
+    private Task createNote(String[] fields) throws QuackersException {
+        if (fields.length != 3) {
+            throw createInvalidDataException();
+        }
+        return new Note(fields[2]);
     }
 
     private Task createDeadline(String[] fields) throws QuackersException {
@@ -135,6 +146,8 @@ public class Storage {
         String status = task.isDone() ? "1" : "0";
         return switch (task.getType()) {
             case TODO -> String.join(FIELD_SEPARATOR,
+                    task.getType().getSymbol(), status, task.getDescription());
+            case NOTE -> String.join(FIELD_SEPARATOR,
                     task.getType().getSymbol(), status, task.getDescription());
             case DEADLINE -> {
                 if (!(task instanceof Deadline deadline)) {

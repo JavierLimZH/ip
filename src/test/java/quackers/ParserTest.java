@@ -78,4 +78,129 @@ class ParserTest {
 
         assertEquals("Quack? Give me note text!", error.getMessage());
     }
+
+    @Test
+    void parseCommandType_keywordPrefixOnly_exceptionThrown() {
+        // "marking" merely starts with "mark", so it must not be treated as a mark command.
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseCommandType("marking 1"));
+
+        assertEquals("Quack? I don't know what that means :-(", error.getMessage());
+    }
+
+    @Test
+    void parseTodo_validDescription_returnsTodo() throws QuackersException {
+        Todo todo = Parser.parseTodo("todo read book");
+
+        assertEquals("[T][ ] read book", todo.toString());
+    }
+
+    @Test
+    void parseTodo_missingDescription_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseTodo("todo"));
+
+        assertEquals("Quack? Give me a todo description!", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_validCommand_returnsEvent() throws QuackersException {
+        Event event = Parser.parseEvent("event project meeting /from 2pm /to 4pm");
+
+        assertEquals("2pm", event.getStartTime());
+        assertEquals("4pm", event.getEndTime());
+        assertEquals("[E][ ] project meeting (from: 2pm to: 4pm)", event.toString());
+    }
+
+    @Test
+    void parseEvent_missingFromMarker_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event project meeting /to 4pm"));
+
+        assertEquals("Quack? Use /from START /to END for an event.", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_missingToMarker_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event project meeting /from 2pm"));
+
+        assertEquals("Quack? Use /from START /to END for an event.", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_markersInWrongOrder_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event meeting /to 4pm /from 2pm"));
+
+        assertEquals("Quack? Use /from START /to END for an event.", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_missingDescription_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event /from 2pm /to 4pm"));
+
+        assertEquals("Quack? Give me an event description!", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_missingStartTime_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event meeting /from  /to 4pm"));
+
+        assertEquals("Quack? Give me an event start time!", error.getMessage());
+    }
+
+    @Test
+    void parseEvent_missingEndTime_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseEvent("event meeting /from 2pm /to "));
+
+        assertEquals("Quack? Give me an event end time!", error.getMessage());
+    }
+
+    @Test
+    void parseDeadline_missingByMarker_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseDeadline("deadline submit report"));
+
+        assertEquals("Quack? Use /by to give the deadline.", error.getMessage());
+    }
+
+    @Test
+    void parseDeadline_missingDescription_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseDeadline("deadline /by 2027-02-28"));
+
+        assertEquals("Quack? Give me a deadline description!", error.getMessage());
+    }
+
+    @Test
+    void parseDeadline_missingDate_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseDeadline("deadline submit report /by "));
+
+        assertEquals("Quack? Give me a deadline date!", error.getMessage());
+    }
+
+    @Test
+    void parseTaskIndex_validNumber_returnsZeroBasedIndex() throws QuackersException {
+        // Users count from one, but the task list is indexed from zero.
+        assertEquals(0, Parser.parseTaskIndex("mark 1", "mark"));
+        assertEquals(2, Parser.parseTaskIndex("delete 3", "delete"));
+    }
+
+    @Test
+    void parseTaskIndex_missingNumber_exceptionThrown() {
+        QuackersException error = assertThrows(
+                QuackersException.class, () -> Parser.parseTaskIndex("mark", "mark"));
+
+        assertEquals("Quack? Please enter a valid task number.", error.getMessage());
+    }
+
+    @Test
+    void parseFindKeyword_keywordWithExtraSpaces_returnsTrimmedKeyword() throws QuackersException {
+        assertEquals("book", Parser.parseFindKeyword("find   book  "));
+    }
 }

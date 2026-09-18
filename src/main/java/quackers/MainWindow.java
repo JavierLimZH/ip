@@ -36,7 +36,7 @@ public class MainWindow extends AnchorPane {
     private final Image userImage =
             new Image(this.getClass().getResourceAsStream("/images/DaUser.png"));
     private final Image quackersImage =
-            new Image(this.getClass().getResourceAsStream("/images/duck.jpg"));
+            new Image(this.getClass().getResourceAsStream("/images/duck.png"));
 
     /**
      * Prepares the window once the FXML fields have been injected.

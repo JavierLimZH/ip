@@ -31,3 +31,8 @@ bundles JavaFX and can be launched with `java -jar quackers.jar`.
 Tasks are saved to `data/quackers.txt`, relative to the working directory.
 
 **Warning:** Keep the `src\main\java` folder as the root folder for Java files (i.e., don't rename those folders or move Java files to another folder outside of this folder path), as this is the default location some tools (e.g., Gradle) expect to find Java files.
+
+## Acknowledgements
+
+- The Quackers avatar (`src/main/resources/images/duck.png`) is the duck from *The Duck Song* by Bryant Oden,
+  taken from a Google Images thumbnail, with its white background made transparent.
